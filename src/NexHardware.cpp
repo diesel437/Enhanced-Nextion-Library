@@ -189,6 +189,8 @@ bool Nextion::connect()
     sendCommand("connect");
     String resp;
     recvRetString(resp,NEX_TIMEOUT_RETURN, false);
+    dbSerialPrintf("Received response: %s", resp.c_str());
+    dbSerialPrintln("");
     if(resp.indexOf("comok") != -1)
     {
         dbSerialPrint("Nextion device details: ");
@@ -200,6 +202,8 @@ bool Nextion::connect()
 
 bool Nextion::findBaud(uint32_t &baud)
 {
+    dbSerialPrint("Looking for correct display baud");
+    dbSerialPrintln("");
     for(uint8_t i = 0; i < (sizeof(baudRates)/sizeof(baudRates[0])); i++)
     {
         if (m_nexSerialType==HW)
@@ -219,12 +223,17 @@ bool Nextion::findBaud(uint32_t &baud)
         }
 #endif
         delay(100);
+        dbSerialPrintf("Issuing 'connect' command at %ld baud rate", baudRates[i]);
+        dbSerialPrintln("");
         if(connect())
         {
             baud = baudRates[i];
             dbSerialPrint("Nextion found baud: ");
             dbSerialPrintln(baud);
             return true;
+        } else {
+            dbSerialPrintf("Command 'connect' failed for %ld baud rate", baudRates[i]);
+            dbSerialPrintln("");
         }
     }
     return false; 
@@ -551,11 +560,12 @@ bool Nextion::RecvTransparendDataModeFinished(size_t timeout)
 
 bool Nextion::nexInit(const uint32_t baud)
 {
+#ifndef NEXTION_SIMULATOR
     m_baud=NEX_SERIAL_DEFAULT_BAUD;
     if (m_nexSerialType==HW)
     {
         // try to connect first with default baud as display may have forgot set baud
-        ((HardwareSerial*)m_nexSerial)->begin(m_baud); // default baud, it is recommended that do not change defaul baud on Nextion, because it can forgot it on re-start
+         ((HardwareSerial*)m_nexSerial)->begin(m_baud); // default baud, it is recommended that do not change defaul baud on Nextion, because it can forgot it on re-start
         if(!connect())
         {
             if(!findBaud(m_baud))
@@ -607,6 +617,10 @@ bool Nextion::nexInit(const uint32_t baud)
             m_baud=baud;
         }
     } 
+#endif
+#else
+    m_baud = baud;
+    ((HardwareSerial*)m_nexSerial)->begin(m_baud);
 #endif
     dbSerialPrint("Used Nextion baud: ");
     dbSerialPrintln(m_baud);
@@ -731,11 +745,13 @@ void Nextion::nexLoop(NexTouch *nex_listen_list[])
             while (m_nexSerial->available())
             {
                 dbSerialPrint(c);
-                dbSerialPrint(',');
+                //dbSerialPrintf("%.2X ", c);
                 c=m_nexSerial->read();
                 yield();
             }
             dbSerialPrintln(c);
+            //dbSerialPrintf("%.2X", c);
+            //dbSerialPrintln("");
         }
-    } 
+    }
 }

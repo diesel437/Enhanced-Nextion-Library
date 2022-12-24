@@ -10,7 +10,8 @@
 
 #pragma once
 
-#include <WString.h>
+#include <Arduino.h>
+#include <String>
 #ifdef ESP8266
 #include <vector>
 #endif
@@ -76,7 +77,7 @@ virtual bool recvRetString(String &str, size_t timeout, bool start_flag) =0;
 * @retval true - success.
 * @retval false - failed. 
 */
-virtual bool recvRetString(char *buffer, uint16_t &len, size_t timeout, bool start_flag) =0;
+virtual bool recvRetString(char *buffer, uint16_t &len, size_t timeout, bool start_flag) = 0;
 
 /* Send Command to device
 *

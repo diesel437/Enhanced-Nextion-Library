@@ -25,6 +25,8 @@
  * @{ 
  */
 
+#define NEXTION_SIMULATOR
+
 /**
  * Define serial communication default baud.
  * it is recommended that do not change defaul baud on Nextion, because it can forgot it on re-start
@@ -55,13 +57,15 @@
  * Define DEBUG_SERIAL_ENABLE to enable debug serial. 
  * Comment it to disable debug serial. 
  */
-//#define DEBUG_SERIAL_ENABLE
+#define DEBUG_SERIAL_ENABLE
 
 /**
  * Define dbSerial for the output of debug messages. 
  * it is resonsibility of main program to initialize debug serial port (begin(...)
  */
-//#define dbSerial Serial
+#include <SerialPIO.h>
+extern SerialPIO Serial3;
+#define dbSerial Serial3
 
 // Enable Next TFT file upload functionality
 //#define NEX_ENABLE_TFT_UPLOAD
@@ -72,13 +76,14 @@
 // Enable SoftwareSerial support by definign NEX_ENABLE_SW_SERIAL
 // NodeMcu / Esp8266 use Softwareserial if usb port is used for debuging
 // NodeMcu board pin numbers not match with Esp8266 pin numbers use NodeMcu Pin number definitions (pins_arduino.h)
-#define NEX_ENABLE_SW_SERIAL
+//#define NEX_ENABLE_SW_SERIAL
 
 
 #ifdef DEBUG_SERIAL_ENABLE
-#define dbSerialPrint(a)    dbSerial.print(a)
-#define dbSerialPrintln(a)  dbSerial.println(a)
-#define dbSerialBegin(a)    dbSerial.begin(a)
+#define dbSerialPrintf(a, ...)      dbSerial.printf(a, __VA_ARGS__)
+#define dbSerialPrint(a)            dbSerial.print(a)
+#define dbSerialPrintln(a)          dbSerial.println(a)
+#define dbSerialBegin(a)            dbSerial.begin(a)
 #else
 #define dbSerialPrint(a)   do{}while(0)
 #define dbSerialPrintln(a) do{}while(0)

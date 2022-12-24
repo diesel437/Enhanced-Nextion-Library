@@ -10,6 +10,7 @@
  */
 
 #pragma once
+#include <String>
 #include "NexConfig.h"
 #include "NexHardwareInterface.h"
 class Nextion;

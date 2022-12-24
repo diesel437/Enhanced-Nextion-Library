@@ -19,7 +19,8 @@
  */
 #pragma once
 
-//#include <Arduino.h>
+#include <Arduino.h>
+#include <String>
 //#include "Nextion.h"
 //#include "NexConfig.h"
 #include "NextionIf.h"
@@ -92,8 +93,6 @@ public: /* methods */
      * @return true if success, false for failure
      */
     bool refresh();
-
-protected: /* methods */
 
     /*
      * Get page id.

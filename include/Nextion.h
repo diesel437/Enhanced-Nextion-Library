@@ -45,6 +45,7 @@
 #include "NexScreen.h"
 #include "NexScrolltext.h"
 #include "NexSlider.h"
+#include "NexSwitch.h"
 #include "NexText.h"
 #include "NexTimer.h"
 #ifdef NEX_ENABLE_TFT_UPLOAD
